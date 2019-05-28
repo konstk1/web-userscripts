@@ -9,10 +9,12 @@
 // @require      https://github.com/kostyan5/web-userscripts/raw/master/utilities.js
 // ==/UserScript==
 
-(function() {
+/* globals request */
+
+(async () => {
   'use strict';
 
-  console.log('Fetching Amazon order transactions...');
+  console.log('KK: Fetching Amazon order transactions...');
   document.querySelectorAll('.order').forEach((orderBox, idx) => {
     // console.log(idx);
     // if (idx < 4 || idx > 6) {
@@ -22,7 +24,8 @@
     const orderDetailsLink = orderBox.querySelector('a[id^=Order-details]');
     console.log(orderDetailsLink.href);
 
-    async function run() {
+    // need to async IIFE because async doesn't work at the top level
+    (async () => {
       try {
         const response = await request('GET', orderDetailsLink.href);
         const parser = new DOMParser();
@@ -42,8 +45,7 @@
       } catch (err) {
         console.err(err);
       }
-    } // end run()
+    })(); // end async IIFE
 
-    run();
   }); // each order
 })();

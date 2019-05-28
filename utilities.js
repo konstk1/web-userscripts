@@ -1,4 +1,4 @@
-console.log('Loading utilities...');
+console.log('KK: Loading utilities...');
 
 async function request(method, url) {
   return new Promise((resolve, reject) => {
