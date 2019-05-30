@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mint Accepted
 // @namespace    KK
-// @version      0.1
+// @version      1.0
 // @description  Highlight new transactions in Mint.
 // @author       KK
 // @match        https://mint.intuit.com/transaction.event
@@ -66,4 +66,4 @@
       }, false);
     };
   })(XMLHttpRequest.prototype.open);
-})();
+})();q
