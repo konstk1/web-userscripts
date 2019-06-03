@@ -23,6 +23,7 @@
   let totalRewards = 0;
 
   document.querySelectorAll('tr.trancDetail').forEach(transaction => {
+    const description = transaction.querySelector('td.transaction-description-cell').innerText
     const amount = parseFloat(transaction.querySelector('td.amount-cell').innerText.replace(/[$,]/g, '')); // strip $ and comma
     const rewardsCell = transaction.querySelector('.rewards-cell');
 
@@ -35,7 +36,10 @@
       if (rate > 3) {
         rateCell.innerHTML = `<strong>${rateCell.innerText}</strong>`;
       }
-      totalAmount += amount;
+      // don't include bonus rewards into total amount spent (it's duplicated)
+      if (!description.includes('Earn 3 Points')) {
+        totalAmount += amount;
+      }
       totalRewards += rewards;
     }
     transaction.appendChild(rateCell);
