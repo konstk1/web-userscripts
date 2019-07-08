@@ -48,6 +48,14 @@
   // update rewards summary footer
   const summaryEl = document.querySelector('td.summary-text');
   summaryEl.setAttribute('colspan', 10); // increase span due to new rate column
+
+  // add total rewards line
+  const totalRewardsEl = summaryEl.lastElementChild.cloneNode(true); // deep clone last line of summary
+  totalRewardsEl.querySelector('.bonus-rewards').innerText = 'Total Rewards';
+  totalRewardsEl.querySelector('.total-bonus-rewards>span').innerText = totalRewards.toFixed(2);
+  summaryEl.appendChild(totalRewardsEl);
+
+  // add total rate item
   const blendedRateEl = summaryEl.lastElementChild.cloneNode(true); // deep clone last line of summary
   blendedRateEl.querySelector('.bonus-rewards').innerText = 'Blended Rate';
   blendedRateEl.querySelector('.total-bonus-rewards>span').innerText = (totalRewards / totalAmount).toFixed(2) + ' %';
