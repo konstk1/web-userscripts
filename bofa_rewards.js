@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BofA CC Rewards
 // @namespace    KK
-// @version      1.0
+// @version      1.1
 // @description  Show reward rate for BofA credit card
 // @author       KK
 // @match        https://secure.bankofamerica.com/customer/myrewards/points/*
