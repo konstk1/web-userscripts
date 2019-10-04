@@ -19,7 +19,7 @@
     const links = Array.from(orderBox.querySelectorAll('a'));
     // console.log(links);
     // links.forEach(x => console.log(x.innerText));
-    const orderDetailsLink = links.find(link => link.innerText.includes('Order Details'))
+    const orderDetailsLink = links.find(link => link.innerText.includes('Order details'))
     console.log(orderDetailsLink.href);
 
     // need to async IIFE because async doesn't work at the top level
