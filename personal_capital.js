@@ -24,7 +24,7 @@
     'Unclassified': 7,
   };
 
-  console.log('Fetching allocations');
+  console.log('Fetching allocations: ', location);
 
   var processed = false;
 

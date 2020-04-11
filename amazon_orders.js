@@ -19,7 +19,7 @@
     const links = Array.from(orderBox.querySelectorAll('a'));
     // console.log(links);
     // links.forEach(x => console.log(x.innerText));
-    const orderDetailsLink = links.find(link => link.innerText.includes('Order details'))
+    const orderDetailsLink = links.find(link => link.innerText.includes('Order Details'))
     console.log(orderDetailsLink.href);
 
     // need to async IIFE because async doesn't work at the top level
@@ -41,9 +41,9 @@
         transEl.appendChild(innerBox)
         orderBox.appendChild(transEl);
       } catch (err) {
-        console.err(err);
+        console.error(err);
       }
-    })(); // end async IIFE
+    })(); // end async
 
   }); // each order
 })();
