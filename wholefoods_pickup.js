@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Whole Foods Pickup
+// @name         Whole Foods Pickup/Delivery
 // @namespace    KK
 // @version      1.0
 // @description  Poll Whole Foods for pickup slots
@@ -20,11 +20,12 @@ let alertDurationSec = 5;
     console.log('Whole Foods pickup: ', new Date());
 
     let noPickup = document.evaluate('//span[contains(text(),"No pickup")]', document).iterateNext();
-    console.log('noPickup:', noPickup);
+    let noDelivery = document.evaluate('//span[contains(text(),"No delivery windows available")]', document).iterateNext();
+    console.log('noPickup:', noPickup, 'noDelivery: ', noDelivery);
 
-    if (noPickup) {
+    if (noPickup || noDelivery) {
         let delaySec = minDelaySec + Math.round(Math.random() * (maxDelaySec - minDelaySec));
-        console.log(`No pickup, refreshing in ${delaySec} seconds.`);
+        console.log(`No pickup/delivery, refreshing in ${delaySec} seconds.`);
         setTimeout(() => {
             console.log('Refreshing');
             location.reload();
@@ -32,7 +33,7 @@ let alertDurationSec = 5;
         return;
     }
 
-    console.log('Pickup slots found, playing alert');
+    console.log('Pickup/delivery slots found, playing alert');
 
     let alertSound = document.createElement('audio');
     alertSound.src = alertAudioUrl;
