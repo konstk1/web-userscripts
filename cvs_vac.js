@@ -22,7 +22,8 @@ let pollTimer = 0;
     console.log('CVS Vac Search: ', new Date());
 
     function processImzResponse(response) {
-        console.log(Date().toLocaleString());
+        const timestamp = new Date().toLocaleTimeString();
+        //console.log(Date().toLocaleString());
         console.log(response);
         const status = response.responseMetaData.statusDesc;
 
@@ -32,10 +33,18 @@ let pollTimer = 0;
         if (status.includes('No stores')) {
             let delaySec = minDelaySec + Math.round(Math.random() * (maxDelaySec - minDelaySec));
             console.log(`Nothing found, delaying ${delaySec} secs`);
-            pollTimer = setTimeout(() => {
-                console.log(`Clicking...(${++requestCount})`);
-                contSchedButton.click();
-            }, delaySec * 1000);
+
+            // if no active poll timer
+            if (pollTimer == 0) {
+                pollTimer = setTimeout(() => {
+                    console.log(`${timestamp} - Clicking...(${++requestCount})`);
+                    pollTimer = 0; // indicate timer is no longer active
+                    contSchedButton.click();
+                }, delaySec * 1000);
+            } else {
+                console.log(`Timer already active (${pollTimer})`);
+            }
+
             return;
         }
 
@@ -53,6 +62,7 @@ let pollTimer = 0;
     window.stopPoll = function() {
         console.log(`Stopping polling (timer ${pollTimer})`);
         clearTimeout(pollTimer);
+        pollTimer = 0;
     };
 
     window.setTiming = function(minDelay, maxDelay) {
@@ -65,9 +75,14 @@ let pollTimer = 0;
         console.log(`Current timing: ${minDelaySec}-${maxDelaySec} sec`);
     };
 
-    // intercept getHoldings api call
+    // intercept search api call
     (function(open) {
         XMLHttpRequest.prototype.open = function() {
+            //console.log(this)
+            if (this.method == 'POST' && this.url.includes('publishmemberevents')) {
+                console.log(this.headers);
+                this.headers['Accept-Language'] = 'en-us';
+            }
             this.addEventListener("readystatechange", function() {
                 if (this.readyState == 4 && this.responseURL.endsWith('/getIMZStores')) {
                     let response = JSON.parse(this.response);
