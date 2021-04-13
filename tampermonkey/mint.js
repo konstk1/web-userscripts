@@ -5,7 +5,7 @@
 // @description  Highlight new transactions in Mint.
 // @author       KK
 // @match        https://mint.intuit.com/transaction.event
-// @require      https://github.com/kostyan5/web-userscripts/raw/master/utilities.js
+// @require      https://github.com/kostyan5/web-userscripts/raw/master/tampermonkey/utilities.js
 // ==/UserScript==
 
 /* globals request */
