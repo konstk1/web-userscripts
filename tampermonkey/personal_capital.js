@@ -6,7 +6,7 @@
 // @author       You
 // @match        https://home.personalcapital.com/page/login/app
 // @grant        GM_xmlhttpRequest
-// @require      https://github.com/kostyan5/web-userscripts/raw/master/tampermonkey/utilities.js
+// @require      https://raw.githubusercontent.com/konstk1/web-userscripts/master/tampermonkey/utilities.js
 // ==/UserScript==
 
 /* globals request */

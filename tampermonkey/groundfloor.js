@@ -6,7 +6,7 @@
 // @author       KK
 // @match        https://www.groundfloor.us/batch_investment_portal
 // @grant        GM_xmlhttpRequest
-// @require      https://github.com/kostyan5/web-userscripts/raw/master/tampermonkey/utilities.js
+// @require      https://raw.githubusercontent.com/konstk1/web-userscripts/master/tampermonkey/utilities.js
 // ==/UserScript==
 
 /* globals request */
