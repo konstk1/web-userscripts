@@ -22,7 +22,7 @@
 
   function updateTable() {
     console.log('KK: Updating table');
-      //data-automation-id="TRANSACTION_TABLE_ROW_READ_2134927_1790129326_0"
+    //data-automation-id="TRANSACTION_TABLE_ROW_READ_2134927_1790129326_0"
     const rows = document.querySelectorAll('table[data-automation-id="TRANSACTIONS_LIST_TABLE"]>tbody>tr').forEach(row => {
       //const date = row.querySelector('.date').innerText.toUpperCase();
       const title = row.getAttribute('title');
@@ -52,13 +52,14 @@
       }
 
       // add bold as necessary to each td>div in this row
-      row.querySelectorAll('td>div').forEach(d => d.style.fontWeight = isAccepted ? '' : 'bold' );
+      row.querySelectorAll('td>div').forEach(d => {
+        d.style.fontWeight = isAccepted ? '' : 'bold';
+      });
+
       // look for Accepted label, and if not found, apply bold to row
       if (!isAccepted) {
         row.classList.add('bold');
-        console.log('Not accepted: ', row.classList);
       } else {
-        console.log('Accepted: ', title);
         row.classList.remove('bold');
       }
     });
@@ -82,4 +83,28 @@
       }, false);
     };
   })(XMLHttpRequest.prototype.open);
+
+  // override send method to modify XHR payload
+  ((send) => {
+    XMLHttpRequest.prototype.send = function(body) {
+      const acceptedTagId = '2134927_1549646';
+      if (body) {
+        let json = JSON.parse(body);
+        if (json.searchFilters?.[0]?.filters?.[0]?.categoryId === '2134927_20') {
+          console.log('Uncategorized: ', json);
+          const excludeAcceptedTagFilter = {
+            type: "TagIdFilter",
+            tagId: acceptedTagId,
+            exclude: true,
+          };
+          json.searchFilters[0].filters[0] = excludeAcceptedTagFilter;
+          console.log('Modified: ', json);
+          body = JSON.stringify(json);
+        }
+      }
+
+      // forward to original handler
+      send.call(this, body);
+    };
+  })(XMLHttpRequest.prototype.send);
 })();
