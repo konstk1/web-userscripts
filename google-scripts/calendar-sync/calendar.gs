@@ -4,7 +4,7 @@
 
 // ---- Settings ---------------------------------------------
 const personalCalId = 'personal@gmail.com';
-const workCalId = 'work@email.com';
+const workCalId = 'work@company.com';
 const daysLookAhead = 30;   // number of days to look forward
 const blockedOffTitle = 'Unavailable';
 //------------------------------------------------------------
@@ -16,10 +16,15 @@ function init() {
     ScriptApp.deleteTrigger(trig);
   }
 
-  ScriptApp.newTrigger('onUpdate')
-  .forUserCalendar(personalCalId)
-  .onEventUpdated()
-  .create()
+  ScriptApp.newTrigger('onUpdatePersonal')
+    .forUserCalendar(personalCalId)
+    .onEventUpdated()
+    .create()
+
+  ScriptApp.newTrigger('onUpdateWork')
+    .forUserCalendar(workCalId)
+    .onEventUpdated()
+    .create()
 }
 
 function getCalendarEvents(calId, startDateTime, endDateTime) {
@@ -102,9 +107,27 @@ function blockOffWorkCalendar(events) {
   }
 }
 
-function onUpdate(event) {
+function onUpdatePersonal(event) {
   // console.log('On update event: ', event);
   const personalEvents = getCalendarEvents(personalCalId, new Date(), getRelativeDate(daysLookAhead, 0));
   console.log('Personal events: ', personalEvents.length);
   blockOffWorkCalendar(personalEvents)
+}
+
+function onUpdateWork(event) {
+  // get events updated in the last 10 seconds
+  const events = Calendar.Events.list(workCalId, {
+    orderBy: 'updated',
+    updatedMin: new Date(Date.now() - 10*1000).toISOString(),
+  })
+  
+  console.log('Processing work cal updates, length: ', events.items.length)
+
+  events.items.forEach(e => {
+    if (e.status === 'confirmed' && e.summary.toLowerCase().includes('unavailable')) {
+      console.log('Updating color event: ', e.summary)
+      e.colorId = 1
+      Calendar.Events.update(e, workCalId, e.id)
+    }
+  })
 }
