@@ -7,6 +7,9 @@ const personalCalId = 'personal@gmail.com';
 const workCalId = 'work@company.com';
 const daysLookAhead = 30;   // number of days to look forward
 const blockedOffTitle = 'Unavailable';
+
+const UNAVAILABLE_COLOR = 1 // Lavender
+const HOLD_COLOR = 1 // Lavender
 //------------------------------------------------------------
 
 function init() {
@@ -57,7 +60,7 @@ function blockOffEvent(event) {
     summary: blockedOffTitle,
     start: event.start,
     end: event.end,
-    colorId: 1, // 1 = purple
+    colorId: UNAVAILABLE_COLOR,
     reminders: { useDefault: false },
   };
 
@@ -107,14 +110,33 @@ function blockOffWorkCalendar(events) {
   }
 }
 
-function onUpdatePersonal(event) {
+function onUpdatePersonal(trigger) {
   // console.log('On update event: ', event);
   const personalEvents = getCalendarEvents(personalCalId, new Date(), getRelativeDate(daysLookAhead, 0));
   console.log('Personal events: ', personalEvents.length);
   blockOffWorkCalendar(personalEvents)
 }
 
-function onUpdateWork(event) {
+function autoColorEvent(event) {
+  if (event.status !== 'confirmed') {
+    return // do nothing for cancelled events
+  }
+
+  const title = event.summary.toLowerCase()
+  
+  if (title.includes('unavailable') || title.includes('commute')) {
+    event.colorId = UNAVAILABLE_COLOR
+  } else if (title.includes('hold')) {
+    event.colorId = HOLD_COLOR
+  }
+
+  if (event.colorId !== undefined && event.colorId > 0) {
+    console.log('Setting color for event: ', event.title, ' color: ', event.colorId)
+    Calendar.Events.update(event, workCalId, event.id)
+  }
+}
+
+function onUpdateWork(trigger) {
   // get events updated in the last 10 seconds
   const events = Calendar.Events.list(workCalId, {
     orderBy: 'updated',
@@ -123,11 +145,5 @@ function onUpdateWork(event) {
   
   console.log('Processing work cal updates, length: ', events.items.length)
 
-  events.items.forEach(e => {
-    if (e.status === 'confirmed' && e.summary.toLowerCase().includes('unavailable')) {
-      console.log('Updating color event: ', e.summary)
-      e.colorId = 1
-      Calendar.Events.update(e, workCalId, e.id)
-    }
-  })
+  events.items.forEach(autoColorEvent)
 }
